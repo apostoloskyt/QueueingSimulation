@@ -24,6 +24,8 @@ a_active = true;
 
 threshold = lambda/(lambda + mu_a*a_active + mu_b*b_active); % the threshold used to calculate probabilities. If both servers are active we double mu.
 
+for k=3:1:6
+
 transitions = 0; % holds the transitions of the simulation in transitions steps
 blocked = 0;
  
@@ -75,19 +77,26 @@ while transitions >= 0
       b_active = true;
     endif
   else % departure
-    if current_state != 0 % no departure from an empty system
+    if current_state != 0                         % no departure from an empty system
       current_state = current_state - 1;
       if b_active
-        if  current_state == 0     %if no clients remain  then b is set to inactive
+        if  current_state == 0                  %if no clients remain  then b is set to inactive
           b_active = false;
           a_active = true;
-        elseif current_state == 1     %if only one client remains either a or b remains active
+        elseif current_state == 1           %if only one client remains either a or b remains active
           random_number = rand(1);
           a_active = (random_number <= p);
           b_active = (random_number > p);
-        elseif current_state <= k    %if  less than or equal to k clients remain in the system then b becomes inactive with probability 1-p = 0.5
+        elseif current_state <= k           %if  less than or equal to k clients remain in the system then
           random_number = rand(1);
-          b_active = (random_number > p);
+          if random_number < 0.5          %if the client was served by server b then we check if server b should remain active
+            if current_state == k              %if  k clients remain in the system then b remains active with probability p or becomes inactive with probability 1-p
+              random_number = rand(1);
+              b_active = (random_number < p);
+            else                                        %if  less than k clients remain in the system then b becomes inactive
+              b_active = false;
+            endif
+          endif
         endif
       endif
     endif
@@ -100,7 +109,11 @@ endfor
 display("P_blocked");
 display(P_blocked);
 
+sim_mean(k) = mean_clients;
 
+endfor
+
+%{
 figure(1);
 plot(to_plot,"r","linewidth",1.3);
 title("Average number of clients in the M/M/2/8 queue: Convergence, lambda=6");
@@ -112,3 +125,10 @@ figure(2);
 bar(P,'r',0.4);
 title("Probabilities, lambda=6");
 saveas (2,"/home/apostolos/Documents/NTUA/10oExamhno/simulation/2_probs_lambda10.png");
+
+%}
+
+figure(3);
+bar(sim_mean,"r",0.4);
+title("Average number of clients in the M/M/2/8 queue k = 3,4,5,6, lambda=6");
+saveas (3,"/home/apostolos/Documents/NTUA/10oExamhno/simulation/k_means_lambda=6.png");

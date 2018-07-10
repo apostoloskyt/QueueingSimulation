@@ -47,7 +47,7 @@ while transitions >= 0
     
     to_plot(index) = mean_clients;
         
-    if abs(mean_clients - previous_mean_clients) < 0.0000001*previous_mean_clients || transitions > 1000000 % convergence test
+    if abs(mean_clients - previous_mean_clients) < 0.0000001 || transitions > 1000000 % convergence test
       break;
     endif
     
@@ -112,7 +112,7 @@ display(P_blocked);
 sim_mean(k) = mean_clients;
 
 endfor
-
+Pb = 1 - 
 
 figure(1);
 plot(to_plot,"r","linewidth",1.3);

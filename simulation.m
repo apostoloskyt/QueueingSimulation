@@ -14,7 +14,7 @@ current_state = 0;  % holds the current state of the system
 previous_mean_clients = 0; % will help in the convergence test
 index = 0;
 
-lambda = 6; 
+lambda = 8; 
 mu_a = 8;
 mu_b = 8;
 k = 3;
@@ -113,22 +113,21 @@ sim_mean(k) = mean_clients;
 
 endfor
 
-%{
+
 figure(1);
 plot(to_plot,"r","linewidth",1.3);
-title("Average number of clients in the M/M/2/8 queue: Convergence, lambda=6");
+title("Average number of clients in the M/M/2/8 queue: Convergence, lambda=8");
 xlabel("transitions in thousands");
 ylabel("Average number of clients");
-saveas (1,"/home/apostolos/Documents/NTUA/10oExamhno/simulation/2_clients_lambda10.png");
+#saveas (1,"/home/apostolos/Documents/NTUA/10oExamhno/simulation/2_clients_lambda10.png");
 
 figure(2);
 bar(P,'r',0.4);
-title("Probabilities, lambda=6");
-saveas (2,"/home/apostolos/Documents/NTUA/10oExamhno/simulation/2_probs_lambda10.png");
+title("Probabilities, lambda=8");
+#saveas (2,"/home/apostolos/Documents/NTUA/10oExamhno/simulation/2_probs_lambda10.png");
 
-%}
-
+sim_mean
 figure(3);
 bar(sim_mean,"r",0.4);
-title("Average number of clients in the M/M/2/8 queue k = 3,4,5,6, lambda=6");
-saveas (3,"/home/apostolos/Documents/NTUA/10oExamhno/simulation/k_means_lambda=6.png");
+title("Average number of clients in the M/M/2/8 queue k = 3,4,5,6, lambda=8");
+#saveas (3,"/home/apostolos/Documents/NTUA/10oExamhno/simulation/k_means_lambda=6.png");

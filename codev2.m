@@ -4,7 +4,7 @@ clc;
 k_vector=[3 4 5 6]; %vector of all k values
 ma=8;
 mb=8;
-p=0.5;
+p=0.9;
     
 for l=6:1:8 % loop for all lambdas
   averages_k =[]; 
@@ -94,8 +94,10 @@ for l=6:1:8 % loop for all lambdas
         totalcounter_vector = [totalcounter_vector total_counter];
        end
     end
-    k;
-    totalcounter_vector
+    k
+    l
+    total_counter
+    totalcounter_vector;
     averages_k = [averages_k averages_vector(end)];
     figure();
     plot(totalcounter_vector,averages_vector);

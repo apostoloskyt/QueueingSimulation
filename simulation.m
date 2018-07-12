@@ -14,13 +14,22 @@ current_state = 0;  % holds the current state of the system
 previous_mean_clients = 0; % will help in the convergence test
 index = 0;
 
-lambda = 8; 
+lambda = 6; 
 mu_a = 8;
 mu_b = 8;
 k = 3;
 p = 0.5;
 b_active = false;
 a_active = true;
+p1a = zeros([1,6]);
+p2a = zeros([1,6]);
+p3a = zeros([1,6]);
+p1b = zeros([1,6]);
+p2ab = zeros([1,6]);
+p3ab = zeros([1,6]);
+ga = zeros([1,6]);
+gb = zeros([1,6]);
+logos = zeros([1,6]);
 
 threshold = lambda/(lambda + mu_a*a_active + mu_b*b_active); % the threshold used to calculate probabilities. If both servers are active we double mu.
 
@@ -39,6 +48,13 @@ while transitions >= 0
         P(i) = arrivals(i)/total_arrivals; % calcuate the probability of every state in the system
         P_blocked = blocked/total_arrivals;
     endfor
+    p1a(k) = p1a(k)/total_arrivals;
+    p2a(k) = p2a(k)/total_arrivals;
+    p3a(k) = p3a(k)/total_arrivals;
+    p1b(k) = p1b(k)/total_arrivals;
+    p2ab(k) = p2ab(k)/total_arrivals;
+    p3ab(k) = p3ab(k)/total_arrivals;
+    
     
     mean_clients = 0; % calculate the mean number of clients in the system
     for i=1:1:length(arrivals)
@@ -63,6 +79,20 @@ while transitions >= 0
     try % to catch the exception if variable arrivals(i) is undefined. Required only for systems with finite capacity. In this case our system has a capacity of 8 clients. 
       arrivals(current_state + 1) = arrivals(current_state + 1) + 1; % increase the number of arrivals in the current state
       current_state = current_state + 1;
+      if current_state == 1 && b_active == true
+        p1b(k) = p1b(k) + 1;
+      elseif current_state == 1 && a_active == true
+        p1a(k) = p1a(k) + 1;
+      elseif current_state == 2 && b_active == false
+        p2a(k) = p2a(k) + 1;
+      elseif current_state == 2 && b_active == true
+        p2ab(k) = p2ab(k) + 1;
+      elseif current_state == 3 && b_active == false
+        p3a(k) = p3a(k) + 1;
+      elseif current_state == 3 && b_active == true
+        p3ab(k) = p3ab(k) + 1;
+      endif      
+        
     catch
       if current_state <8      
         arrivals(current_state + 1) = 1;
@@ -112,8 +142,8 @@ display(P_blocked);
 sim_mean(k) = mean_clients;
 
 endfor
-Pb = 1 - 
 
+#{
 figure(1);
 plot(to_plot,"r","linewidth",1.3);
 title("Average number of clients in the M/M/2/8 queue: Convergence, lambda=8");
@@ -125,7 +155,28 @@ figure(2);
 bar(P,'r',0.4);
 title("Probabilities, lambda=8");
 #saveas (2,"/home/apostolos/Documents/NTUA/10oExamhno/simulation/2_probs_lambda10.png");
+#}
 
+for k=3:1:6
+  ga(k) = mu_a*(1-p1b(k))
+  gb(k) = mu_b*(1-p1a(k)-p2a(k)-p3a(k))
+endfor
+
+for k=3:1:6
+  logos(k) = ga(k)/gb(k);
+endfor
+
+ga
+gb
+logos
+#{
+p1a
+p2a
+p3a
+p1b
+p2ab
+p3ab
+#}
 sim_mean
 figure(3);
 bar(sim_mean,"r",0.4);
